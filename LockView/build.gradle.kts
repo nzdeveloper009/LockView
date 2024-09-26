@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    id("maven-publish")
 }
 
 android {
@@ -21,6 +22,8 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            consumerProguardFiles("proguard-rules.pro")
+            consumerProguardFiles("consumer-rules.pro")
         }
     }
     compileOptions {
@@ -31,6 +34,24 @@ android {
         jvmTarget = "17"
     }
 }
+
+afterEvaluate {
+    publishing {
+        publications {
+            create<MavenPublication>("maven") {
+                from (components["release"])
+                groupId = "com.github.nzdeveloper009"
+                artifactId = "LockView"
+                version = "1.0.0"
+            }
+        }
+
+        repositories {
+            mavenLocal()
+        }
+    }
+}
+
 
 dependencies {
     implementation(libs.androidx.core.ktx)
